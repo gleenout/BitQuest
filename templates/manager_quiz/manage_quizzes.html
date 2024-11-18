@@ -1,0 +1,56 @@
+{% extends 'manager_quiz/base_manage.html' %}
+{% load tags %}
+
+{% block title %}Gerenciar Quizzes{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1 class="text-center">Gerenciar Quizzes</h1>
+
+        <div class="text-center mb-4">
+            <a href="{% url 'webquiz:create_quiz' %}" class="btn btn-primary btn-lg">Criar Novo Quiz</a>
+        </div>
+
+        {% if quizzes %}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Título</th>
+                    <th>Categoria</th>
+                    <th>Dificuldade</th>
+                    <th>Questões</th>
+                    <th>Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for quiz in quizzes %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ quiz.title }}</td>
+                        <td>{{ quiz.get_category_display }}</td>
+                        <td>{{ quiz.get_difficulty_display }}</td>
+                        <td>{{ quiz.question_count }}</td>
+                        <td>
+                            <a href="{% url 'webquiz:quiz_details' quiz.id %}" class="btn btn-info btn-sm">Detalhes</a>
+                            {% if quiz.is_published %}
+                                <a href="{% url 'webquiz:unpublish_quiz' quiz.id %}" class="btn btn-danger btn-sm">Despublicar</a>
+                            {% else %}
+                                {% if quiz.question_count >= 6 %}
+                                    <a href="{% url 'webquiz:publish_quiz' quiz.id %}" class="btn btn-success btn-sm">Publicar</a>
+                                {% else %}
+                                    <button class="btn btn-secondary btn-sm" disabled title="Mínimo de 6 questões necessário">Publicar</button>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-warning text-center" role="alert">
+                Nenhum quiz cadastrado ainda. Clique no botão acima para criar seu primeiro quiz!
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

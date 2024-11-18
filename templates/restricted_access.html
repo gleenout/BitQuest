@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Acesso Negado{% endblock %}
+
+{% block content %}
+    <div class="container mt-5 text-center">
+        <div class="alert alert-danger">
+            <h4>Acesso Negado</h4>
+            <p>Esta área é restrita a administradores. Você será redirecionado para a página inicial em 3 segundos.</p>
+        </div>
+    </div>
+
+    <!-- Script para redirecionar após 3 segundos -->
+    <script type="text/javascript">
+        setTimeout(function() {
+            window.location.href = "{% url 'webquiz:home' %}";
+        }, 3000);
+    </script>
+{% endblock %}

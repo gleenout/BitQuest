@@ -1,0 +1,197 @@
+{# templates/includes/accessibility_widget.html #}
+{% load static %}
+
+<div class="accessibility-widget">
+    <button class="accessibility-button" aria-label="Opções de Acessibilidade">
+        <i class="fas fa-universal-access"></i>
+    </button>
+    <div class="accessibility-menu">
+        <div class="accessibility-option" data-action="contrast">
+            <i class="fas fa-adjust"></i> Alto Contraste
+        </div>
+        <div class="accessibility-option" data-action="invert">
+            <i class="fas fa-circle"></i> Cores Invertidas
+        </div>
+        <div class="accessibility-option" data-action="grayscale">
+            <i class="fas fa-gray"></i> Escala de Cinza
+        </div>
+        <div class="accessibility-option" data-action="animations">
+            <i class="fas fa-running"></i> Desativar Animações
+        </div>
+        <div class="accessibility-option" data-action="increase-font">
+            <i class="fas fa-plus"></i> Aumentar Fonte
+        </div>
+        <div class="accessibility-option" data-action="decrease-font">
+            <i class="fas fa-minus"></i> Diminuir Fonte
+        </div>
+        <div class="accessibility-option" data-action="read-page">
+            <i class="fas fa-volume-up"></i> Ler Página
+        </div>
+    </div>
+</div>
+
+<style>
+    .accessibility-widget {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
+    .accessibility-button {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        transition: background-color 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .accessibility-button i {
+        font-size: 24px;
+    }
+
+    .accessibility-button:hover {
+        background-color: #0056b3;
+    }
+
+    .accessibility-menu {
+        position: absolute;
+        bottom: 60px;
+        right: 0;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        padding: 15px;
+        width: 250px;
+        display: none;
+    }
+
+    .accessibility-menu.active {
+        display: block;
+    }
+
+    .accessibility-option {
+        padding: 8px 12px;
+        margin: 5px 0;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .accessibility-option:hover {
+        background-color: #f8f9fa;
+    }
+
+    .accessibility-option i {
+        width: 20px;
+        text-align: center;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const button = document.querySelector('.accessibility-button');
+        const menu = document.querySelector('.accessibility-menu');
+        const options = document.querySelectorAll('.accessibility-option');
+
+        // Toggle menu on button click
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            menu.classList.toggle('active');
+        });
+
+        // Handle individual options
+        options.forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const action = this.dataset.action;
+                handleAccessibilityAction(action);
+            });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!menu.contains(e.target)) {
+                menu.classList.remove('active');
+            }
+        });
+
+        function handleAccessibilityAction(action) {
+            switch(action) {
+                case 'contrast':
+                    document.body.classList.toggle('high-contrast');
+                    break;
+                case 'invert':
+                    document.body.classList.toggle('inverted');
+                    break;
+                case 'grayscale':
+                    document.body.classList.toggle('grayscale');
+                    break;
+                case 'animations':
+                    document.body.classList.toggle('no-animations');
+                    break;
+                case 'increase-font':
+                    adjustFontSize(1);
+                    break;
+                case 'decrease-font':
+                    adjustFontSize(-1);
+                    break;
+                case 'read-page':
+                    readPage();
+                    break;
+            }
+            savePreferences();
+        }
+
+        function adjustFontSize(direction) {
+            const body = document.body;
+            let currentSize = parseInt(window.getComputedStyle(body).fontSize);
+            const newSize = currentSize + (direction * 2);
+
+            if (newSize >= 12 && newSize <= 24) {
+                body.style.fontSize = `${newSize}px`;
+            }
+        }
+
+        function readPage() {
+            if ('speechSynthesis' in window) {
+                const text = document.querySelector('main')?.innerText || document.body.innerText;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'pt-BR';
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function savePreferences() {
+            const preferences = {
+                highContrast: document.body.classList.contains('high-contrast'),
+                inverted: document.body.classList.contains('inverted'),
+                grayscale: document.body.classList.contains('grayscale'),
+                noAnimations: document.body.classList.contains('no-animations'),
+                fontSize: document.body.style.fontSize
+            };
+            localStorage.setItem('accessibility-preferences', JSON.stringify(preferences));
+        }
+
+        // Load saved preferences
+        const saved = localStorage.getItem('accessibility-preferences');
+        if (saved) {
+            const preferences = JSON.parse(saved);
+            if (preferences.highContrast) document.body.classList.add('high-contrast');
+            if (preferences.inverted) document.body.classList.add('inverted');
+            if (preferences.grayscale) document.body.classList.add('grayscale');
+            if (preferences.noAnimations) document.body.classList.add('no-animations');
+            if (preferences.fontSize) document.body.style.fontSize = preferences.fontSize;
+        }
+    });
+</script>

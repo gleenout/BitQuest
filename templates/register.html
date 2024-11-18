@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load static %}{% load tags %}
+{% block title %}Cadastrar{% endblock %}
+
+{% block style %}
+    <link href="{% static 'style.css' %}" rel="stylesheet">
+    <style>
+        /* Ajustes para o container do formulário */
+        .form-container {
+            width: 400px;
+            max-width: 100%;
+            background-color: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            padding: 40px 50px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Animação ao passar o mouse sobre o formulário */
+        .form-container:hover {
+            transform: scale(1.02);
+        }
+
+        /* Ajuste nos campos do formulário */
+        .form-outline {
+            margin-bottom: 20px;
+        }
+
+        .form-outline input {
+            color: #000;
+            padding: 15px;
+            background-color: #ffffff; /* Cor de fundo mais clara */
+            border-radius: 10px;
+            border: 1px solid #d1d3e2; /* Borda suave para destaque */
+            transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        /* Cor da borda e sombra ao focar nos inputs */
+        .form-outline input:focus {
+            border-color: #4e73df; /* Azul para borda ao focar */
+            box-shadow: 0 0 10px rgba(78, 115, 223, 0.5);
+        }
+
+        /* Label dos campos */
+        .form-label {
+            color: #333;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* Placeholder dos campos */
+        .form-outline input::placeholder {
+            color: #888;
+        }
+
+        /* Estilização do botão */
+        .btn-primary {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 25px;
+            background-color: #4e73df;
+            border: none;
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .btn-primary:hover {
+            background-color: #375a7f;
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+        }
+
+        /* Alinhamento e estilo do link de login */
+        .text-center a {
+            font-size: 14px;
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .text-center a:hover {
+            color: #0056b3;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 30px 40px;
+            }
+
+            .btn-primary {
+                padding: 12px;
+                font-size: 15px;
+            }
+
+            .form-label {
+                font-size: 15px;
+            }
+
+            .form-outline input {
+                padding: 12px;
+                font-size: 15px;
+            }
+        }
+
+    </style>
+{% endblock %}
+
+{% block header %}
+    {% element bggradient %}
+        {% slot action %}
+            <div class="container d-flex justify-content-center align-items-center vh-100">
+                <div class="form-container">
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+
+                        <!-- Nome input -->
+                        <div class="form-outline mb-4">
+                            {{ form.first_name.label_tag }}
+                            {{ form.first_name }}
+                            {% for error in form.first_name.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Email input -->
+                        <div class="form-outline mb-4">
+                            {{ form.email.label_tag }}
+                            {{ form.email }}
+                            {% for error in form.email.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Password input -->
+                        <div class="form-outline mb-4">
+                            {{ form.password.label_tag }}
+                            {{ form.password }}
+
+                            {% if messages %}
+                                <ul class="messages">
+                                    {% for message in messages %}
+                                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+
+                        </div>
+
+                        <!-- Botão de cadastro -->
+                        <button type="submit" class="btn btn-primary btn-block">Cadastrar</button>
+
+                        <!-- Link para login -->
+                        <div class="text-center mt-4">
+                            <p>Já tem uma conta? <a href="{% url 'webquiz:login' %}">Login</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        {% endslot %}
+    {% endelement %}
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="{% static 'script.js' %}"></script>
+{% endblock %}

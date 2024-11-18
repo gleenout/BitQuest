@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container my-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="card-title text-center">Adicionar Opções para a Pergunta: {{ question.question_text }}</h1>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="option_text" class="form-label">Texto da Opção</label>
+                        {{ form.option_text }}
+                    </div>
+                    <div class="form-check mb-3">
+                        {{ form.is_correct }}
+                        <label class="form-check-label" for="is_correct">Essa é a resposta correta?</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Adicionar Opção</button>
+                </form>
+            </div>
+        </div>
+        <a href="{% url 'webquiz:quiz_details' question.quiz.id %}" class="btn btn-secondary mt-4">Voltar</a>
+    </div>
+{% endblock %}

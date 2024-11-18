@@ -1,0 +1,59 @@
+{% load tags %}{% load static %}
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary shadow-sm">
+        <div class="container-fluid">
+            <!-- Logo e Nome da Marca -->
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'webquiz:home' %}">
+                <img
+                        src="{% static 'images/logo_bitquest.png' %}"
+                        class="me-2"
+                        height="40"
+                        alt="Logo Bit Quest"
+                        loading="lazy"
+                />
+                <span class="fw-bold">BitQuest</span>
+            </a>
+
+            <!-- Botão para dispositivos móveis -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Itens do Navbar -->
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <!-- Avatar com Dropdown -->
+                <div class="dropdown">
+                    <a
+                            data-mdb-dropdown-init
+                            class="dropdown-toggle d-flex align-items-center hidden-arrow"
+                            href="#"
+                            id="navbarDropdownMenuAvatar"
+                            role="button"
+                            aria-expanded="false"
+                    >
+                        <img
+                                src="{% static 'images/default_profile.jpg' %}"
+                                class="rounded-circle"
+                                height="25"
+                                alt="Avatar"
+                                loading="lazy"
+                        />
+                    </a>
+                    <ul
+                            class="dropdown-menu dropdown-menu-end"
+                            aria-labelledby="navbarDropdownMenuAvatar"
+                    >
+                        <li>
+                            <a class="dropdown-item" href="{% url 'webquiz:profile' %}">Perfil</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'webquiz:manage_quizzes' %}">Painel</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'webquiz:logout' %}">Sair</a>
+                        </li>
+                    </ul>
+                </div>
+        </div>
+    </nav>
+</header>

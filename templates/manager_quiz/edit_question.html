@@ -1,0 +1,63 @@
+{% extends 'manager_quiz/base_manage.html' %}
+{% load static %}
+
+{% block title %}Editar Pergunta{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2>Editar Pergunta do Quiz: {{ quiz.title }}</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="question">Texto da Pergunta</label>
+                {{ form.question }}
+            </div>
+            <div class="form-group">
+                <label for="points">Pontos</label>
+                {{ form.points }}
+            </div>
+
+            <h4>Opções de Resposta</h4>
+
+            <div class="form-group">
+                <label for="option1">Opção 1</label>
+                {{ form.option1 }}
+                <div class="form-check">
+                    {{ form.option1_correct }}
+                    <label class="form-check-label">Esta é a resposta correta</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="option2">Opção 2</label>
+                {{ form.option2 }}
+                <div class="form-check">
+                    {{ form.option2_correct }}
+                    <label class="form-check-label">Esta é a resposta correta</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="option3">Opção 3</label>
+                {{ form.option3 }}
+                <div class="form-check">
+                    {{ form.option3_correct }}
+                    <label class="form-check-label">Esta é a resposta correta</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="option4">Opção 4</label>
+                {{ form.option4 }}
+                <div class="form-check">
+                    {{ form.option4_correct }}
+                    <label class="form-check-label">Esta é a resposta correta</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+            <a href="{% url 'webquiz:quiz_details' quiz.id %}" class="btn btn-secondary">Voltar</a>
+        </form>
+    </div>
+{% endblock %}

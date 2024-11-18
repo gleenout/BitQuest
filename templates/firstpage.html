@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}{% load tags %}
+{% block title %}Iniciar{% endblock %}
+
+{% block style %}
+    <link href="{% static 'style.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block header %}{% element bgvideo %}{% endelement %}{% endblock %}
+
+{% block content %}
+    <!-- Conteúdo sobreposto ao vídeo -->
+    <div class="container position-relative d-flex flex-column align-items-center justify-content-center vh-100">
+        <div id="initialContent" class="text-white text-center" data-mdb-theme="dark">
+            <h1 class="mb-3">Bem-vindo ao BitQuiz!</h1>
+            <h5 class="mb-4">Quizzes sobre letramento computacional.</h5>
+            <a class="btn btn-outline-light btn-lg m-2" href="{% url 'webquiz:login' %}">Iniciar</a>
+            <br>
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="{% static 'script.js' %}"></script>
+{% endblock %}

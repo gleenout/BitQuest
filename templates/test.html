@@ -1,0 +1,12 @@
+{% extends 'base.html' %}{% load tags %}{% load static %}
+{% block style %}
+    <link href="{% static 'style.css' %}" rel="stylesheet">
+{%endblock%}
+{% block content %}
+
+  <div>
+      <p style="color: #81d4fa">TESTE</p>
+      <a href="{% url 'webquiz:logout' %}" class="btn btn-danger">Logout</a>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,9 @@
+<h2>Dashboard</h2>
+<p>Nível: {{ user_profile.level }}</p>
+<p>Pontuação: {{ user_profile.score }}</p>
+<h3>Quizzes disponíveis:</h3>
+<ul>
+    {% for quiz in quizzes %}
+    <li><a href="{% url 'webquiz:take_quiz' quiz.id %}">{{ quiz.title }}</a></li>
+    {% endfor %}
+</ul>

@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+{% load static %}{% load tags %}
+{% block title %}Início{% endblock %}
+
+{% block header %}
+    {% element navbar %}{% endelement %}
+{% endblock %}
+
+{% block style %}
+    <style>
+        /* Layout principal */
+        .home-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            padding: 40px;
+            background-color: #f7f9fc;
+        }
+
+        .home-new {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            padding: 40px;
+        }
+
+        /* Mensagem de boas-vindas */
+        .home-message {
+            background: linear-gradient(to right, #4e73df, #224abe);
+            color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            padding: 20px;
+        }
+        .home-message h1 {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .home-message p {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+        /* Seções de Quizzes Recentes e Categorias */
+        .sections-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+        .section-card {
+            flex: 1;
+            min-width: 280px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .section-card h3 {
+            font-size: 24px;
+            color: #224abe;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Cartão de quiz e de categoria */
+        .quiz-card, .category-card {
+            padding: 15px;
+            background-color: #f1f3f9;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #e0e4ea;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+        }
+        .quiz-card h5, .category-card h5 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333333;
+            margin: 0;
+        }
+        .quiz-card p, .category-card p {
+            font-size: 14px;
+            color: #555555;
+            margin-top: 5px;
+        }
+
+        /* Mensagem de nenhum item */
+        .no-quiz-message, .no-category-message {
+            font-size: 16px;
+            color: #999999;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .sections-container {
+                flex-direction: column;
+            }
+            .home-message h1 {
+                font-size: 28px;
+            }
+            .home-message p {
+                font-size: 16px;
+            }
+            .section-card {
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .home-message {
+                padding: 15px;
+            }
+            .home-message h1 {
+                font-size: 24px;
+            }
+            .home-message p {
+                font-size: 14px;
+            }
+        }
+
+        .card-title {
+            font-size: 0.875rem;
+            font-weight: bold;
+        }
+        .card-text {
+            font-size: 0.875rem;
+        }
+        .badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 0.75rem;
+        }
+        .card-img-placeholder {
+            width: 100%;
+            height: 200px;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 1rem;
+        }
+        .card {
+            height: 100%;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+        }
+        .card:hover, .card:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="home-container">
+        <!-- Mensagem de boas-vindas -->
+        <div class="p-5 text-center bg-light home-message">
+            <h1>Bem-vindo ao BitQuest!</h1>
+            <p>Explore quizzes sobre letramento computacional e melhore suas habilidades.</p>
+        </div>
+
+        <!-- Seções de Quizzes Recentes e Categorias -->
+        <div class="home-new">
+            <h4>
+                Mais recentes
+            </h4>
+            <div class="row row-cols-1 row-cols-md-6 g-4">
+                {% for quiz in recent_quizzes|slice:":6" %}
+                    <div class="col">
+                        <div class="card h-100" onclick="window.location.href='{% url 'webquiz:quiz_questions' quiz.id %}'">
+                            <div class="position-relative">
+                                <div class="card-img-placeholder">
+                                    600x400
+                                </div>
+                                <span class="badge">{{ quiz.get_category_display }}</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    {{ quiz.title }}
+                                </h5>
+                                <p class="card-text">
+                                    Nível: {{ quiz.get_difficulty_display }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="no-quiz-message">Nenhum quiz cadastrado recentemente.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="home-new">
+        <div class="mt-4">
+            <h4>
+                Todos os Quizzes
+            </h4>
+            <div class="row row-cols-1 row-cols-md-6 g-4">
+                {% for quiz in all_quizzes %}
+                    <div class="col">
+                        <div class="card h-100" onclick="window.location.href='{% url 'webquiz:quiz_questions' quiz.id %}'">
+                            <div class="position-relative">
+                                <div class="card-img-placeholder">
+                                    600x400
+                                </div>
+                                <span class="badge">{{ quiz.get_category_display }}</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    {{ quiz.title }}
+                                </h5>
+                                <p class="card-text">
+                                    Nível: {{ quiz.get_difficulty_display }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="no-quiz-message">Nenhum quiz cadastrado ou publicado.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

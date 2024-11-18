@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% block title %}Editar Pergunta do Quiz: {{ quiz.title }}{% endblock %}
+
+{% block style %}
+    <style>
+        .form-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .form-control {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-check {
+            margin-bottom: 15px;
+        }
+
+        h3 {
+            margin-bottom: 25px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 25px;
+            background-color: #007bff;
+            border: none;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            margin-top: 15px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 25px;
+            background-color: #6c757d;
+            border: none;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .form-check-input {
+            margin-right: 10px;
+            margin-left: 5px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container my-5">
+        <div class="form-container">
+            <h2 class="text-center mb-4">Adicionar Pergunta do Quiz: {{ quiz.title }}</h2>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="question_text">Texto da Pergunta</label>
+                    {{ form.question }}
+                </div>
+
+                <div class="form-group">
+                    <label for="points_choice">Escolha a Pontuação para esta Pergunta</label>
+                    {{ form.points_choice }}
+                </div>
+
+                <h3>Opções de Resposta</h3>
+
+                <div class="form-group">
+                    <label for="option1">Opção 1</label>
+                    {{ form.option1 }}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="correct_answer" id="correct1" value="1" {% if form.option1_correct.value %}checked{% endif %}>
+                        <label class="form-check-label" for="correct1">Esta é a resposta correta</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="option2">Opção 2</label>
+                    {{ form.option2 }}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="correct_answer" id="correct2" value="2" {% if form.option2_correct.value %}checked{% endif %}>
+                        <label class="form-check-label" for="correct2">Esta é a resposta correta</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="option3">Opção 3</label>
+                    {{ form.option3 }}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="correct_answer" id="correct3" value="3" {% if form.option3_correct.value %}checked{% endif %}>
+                        <label class="form-check-label" for="correct3">Esta é a resposta correta</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="option4">Opção 4</label>
+                    {{ form.option4 }}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="correct_answer" id="correct4" value="4" {% if form.option4_correct.value %}checked{% endif %}>
+                        <label class="form-check-label" for="correct4">Esta é a resposta correta</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                <a href="{% url 'webquiz:quiz_details' quiz.id %}" class="btn btn-secondary">Voltar</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

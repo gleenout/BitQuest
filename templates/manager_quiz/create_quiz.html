@@ -1,0 +1,43 @@
+{% extends 'manager_quiz/base_manage.html' %}
+{% load static %}
+
+{% block title %}Cadastrar Quiz{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-lg">
+                    <div class="card-body">
+                        <h3 class="card-title text-center mb-4">Cadastrar Quiz</h3>
+                        <form method="POST">
+                            {% csrf_token %}
+
+                            <div class="form-group mb-3">
+                                <label for="title">Título:</label>
+                                <input type="text" class="form-control" id="title" name="title" placeholder="Digite o título do quiz" required>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="description">Descrição:</label>
+                                <textarea class="form-control" id="description" name="description" rows="3" placeholder="Digite a descrição do quiz"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="category">Categoria:</label>
+                                {{ quiz_form.category }}
+                            </div>
+                            <div class="form-group">
+                                <label for="difficulty">Dificuldade:</label>
+                                {{ quiz_form.difficulty }}
+                            </div><br>
+
+                            <button type="submit" class="btn btn-primary btn-block">Cadastrar Quiz</button>
+                            <a href="{% url 'webquiz:manage_quizzes' %}" class="btn btn-secondary btn-block mt-2">Voltar</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

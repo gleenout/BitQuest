@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Excluir Pergunta{% endblock %}
+
+{% block content %}
+    <div class="container my-5">
+        <h2>Excluir Pergunta</h2>
+        <p>Tem certeza de que deseja excluir a pergunta "{{ question.question_text }}" do quiz "{{ quiz.title }}"?</p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Excluir</button>
+            <a href="{% url 'webquiz:quiz_details' quiz.id %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+{% endblock %}

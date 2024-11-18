@@ -1,0 +1,52 @@
+{% extends 'manager_quiz/base_manage.html' %}
+{% load static %}
+{% block title %}Detalhes do Quiz{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2>Detalhes do Quiz: {{ quiz.title }}</h2>
+        <p><strong>Categoria:</strong> {{ quiz.get_category_display }}</p>
+        <p><strong>Dificuldade:</strong> {{ quiz.get_difficulty_display }}</p>
+
+        <!-- Botões de Ações para o Quiz -->
+        <div class="mb-4">
+            <a href="{% url 'webquiz:edit_quiz' quiz.id %}" class="btn btn-warning">Editar Quiz</a>
+            <form method="POST" action="{% url 'webquiz:delete_quiz' quiz.id %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir este quiz?');">
+                    Excluir Quiz
+                </button>
+            </form>
+        </div>
+
+        <h3>Perguntas</h3>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Pergunta</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for question in questions %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ question.question_text }}</td>
+                    <td>
+                        <a href="{% url 'webquiz:edit_question' quiz.id question.id %}" class="btn btn-primary">Editar</a>
+                        <a href="{% url 'webquiz:delete_question' quiz.id question.id %}" class="btn btn-danger">Excluir</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">Nenhuma pergunta cadastrada.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{% url 'webquiz:add_question' quiz.id %}" class="btn btn-success">Adicionar Pergunta</a>
+        <a href="{% url 'webquiz:manage_quizzes' %}" class="btn btn-secondary">Voltar</a>
+    </div>
+{% endblock %}

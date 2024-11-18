@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}{% load tags %}
+{% block title %}Quiz - {{ quiz.title }}{% endblock %}
+
+{% block style %}
+    <link href="{% static 'style.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block header %}
+    {% element navbar %}{% endelement %}
+{% endblock %}
+
+{% block content %}
+    <div class="container my-5">
+        <div class="card shadow-sm p-4">
+            <h2 class="text-center text-primary mb-4">{{ quiz.title }}</h2>
+            <p class="text-center lead"><strong>Pergunta:</strong> {{ question.question_text }}</p>
+
+            <form method="POST" class="mt-4">
+                {% csrf_token %}
+                <div class="form-group quiz-options">
+                    {% for option in question.answer_options.all %}
+                        <div class="form-check mb-3">
+                            <input
+                                    type="radio"
+                                    name="selected_option"
+                                    id="option{{ option.id }}"
+                                    value="{{ option.id }}"
+                                    class="form-check-input"
+                                    required
+                            >
+                            <label class="form-check-label" for="option{{ option.id }}">
+                                {{ option.option_text }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary">Próxima</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
