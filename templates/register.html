@@ -16,11 +16,6 @@
             transition: transform 0.3s ease-in-out;
         }
 
-        /* Animação ao passar o mouse sobre o formulário */
-        .form-container:hover {
-            transform: scale(1.02);
-        }
-
         /* Ajuste nos campos do formulário */
         .form-outline {
             margin-bottom: 20px;
@@ -110,51 +105,62 @@
         {% slot action %}
             <div class="container d-flex justify-content-center align-items-center vh-100">
                 <div class="form-container">
-                    <form method="POST">
+                    <h2 class="text-center mb-4">Criar Conta</h2>
+
+                    <form method="post">
                         {% csrf_token %}
-                        {{ form.non_field_errors }}
 
-                        <!-- Nome input -->
-                        <div class="form-outline mb-4">
-                            {{ form.first_name.label_tag }}
-                            {{ form.first_name }}
-                            {% for error in form.first_name.errors %}
-                                <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-
-                        <!-- Email input -->
-                        <div class="form-outline mb-4">
-                            {{ form.email.label_tag }}
-                            {{ form.email }}
-                            {% for error in form.email.errors %}
-                                <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-
-                        <!-- Password input -->
-                        <div class="form-outline mb-4">
-                            {{ form.password.label_tag }}
-                            {{ form.password }}
-
-                            {% if messages %}
-                                <ul class="messages">
-                                    {% for message in messages %}
-                                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+                        <!--{% if form.errors %}
+                            <div class="alert alert-danger">
+                                <ul>
+                                    {% for field, errors in form.errors.items %}
+                                        <li>{{ field }}: {{ errors|join:", " }}</li>
                                     {% endfor %}
                                 </ul>
+                            </div>
+                        {% endif %}-->
+
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">Nome de Usuário</label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                                <div class="text-danger">
+                                    {{ form.username.errors }}
+                                </div>
                             {% endif %}
-
                         </div>
 
-                        <!-- Botão de cadastro -->
-                        <button type="submit" class="btn btn-primary btn-block">Cadastrar</button>
-
-                        <!-- Link para login -->
-                        <div class="text-center mt-4">
-                            <p>Já tem uma conta? <a href="{% url 'webquiz:login' %}">Login</a></p>
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="text-danger">
+                                    {{ form.email.errors }}
+                                </div>
+                            {% endif %}
                         </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.password.id_for_label }}" class="form-label">Senha</label>
+                            {{ form.password }}
+                            {% if form.password.errors %}
+                                <div class="text-danger">
+                                    {{ form.password.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
                     </form>
+
+                    <div class="text-center mt-3">
+                        <p class="mb-0">Já tem uma conta? <a href="{% url 'webquiz:login' %}" class="text-primary">Faça login</a></p>
+                    </div>
                 </div>
             </div>
         {% endslot %}

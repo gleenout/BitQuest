@@ -1,4 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class Quiz(models.Model):
     CATEGORY_CHOICES = [
@@ -48,12 +51,19 @@ class AnswerOption(models.Model):
     def __str__(self):
         return self.option_text
 
-from django.contrib.auth.models import User
-
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    level = models.IntegerField(default=1)
     score = models.IntegerField(default=0)
+    level = models.IntegerField(default=1)
 
     def __str__(self):
-        return f"{self.user.username}'s profile"
+        return f"{self.user.username}'s Profile"
+
+@receiver(post_save, sender=User)
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        # Cria o perfil automaticamente quando o usuário é criado
+        UserProfile.objects.create(user=instance)
+    else:
+        # Atualiza o perfil, se necessário
+        instance.userprofile.save()

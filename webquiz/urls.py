@@ -1,4 +1,5 @@
 from django.urls import path
+from django.contrib.auth import views as auth_views
 from . import views
 
 app_name = 'webquiz'
@@ -29,8 +30,6 @@ urlpatterns = [
     # Rota para uma pergunta específica
     path('play/<int:quiz_id>/perguntas/<int:question_id>/', views.quiz_question, name='quiz_question_with_id'),
     path('play/<int:quiz_id>/resultados/', views.quiz_results, name='quiz_results'),
-
-
 
     path('acesso_negado/', views.restricted_access_view, name='restricted_access'),
 

@@ -6,12 +6,17 @@ import re
 
 # Formulário de Registro
 class UserRegistrationForm(forms.ModelForm):
+    #confirm_password = forms.CharField(
+    #    widget=forms.PasswordInput(attrs={'placeholder': 'Confirme sua senha', 'class': 'form-control'}),
+    #    label='Confirme a Senha'
+    #)
+
     class Meta:
         model = User
-        fields = ['first_name', 'email', 'password']
+        fields = ['username', 'email', 'password']
         widgets = {
-            'first_name': forms.TextInput(attrs={
-                'placeholder': 'Digite seu nome completo',
+            'username': forms.TextInput(attrs={
+                'placeholder': 'Digite seu nome de usuário',
                 'class': 'form-control'
             }),
             'email': forms.EmailInput(attrs={
@@ -24,15 +29,16 @@ class UserRegistrationForm(forms.ModelForm):
             }),
         }
         labels = {
-            'first_name': 'Nome Completo',
+            'username': 'Nome de Usuário',
             'email': 'Email',
             'password': 'Senha',
         }
-        help_texts = {
-            'first_name': None,
-            'email': None,
-            'password': None,
-        }
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if User.objects.filter(username=username).exists():
+            raise ValidationError('Este nome de usuário já está em uso.')
+        return username
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -50,14 +56,21 @@ class UserRegistrationForm(forms.ModelForm):
             raise forms.ValidationError("A senha deve conter pelo menos um número.")
         return password
 
+    #def clean(self):
+    #    cleaned_data = super().clean()
+    #    password = cleaned_data.get('password')
+    #    confirm_password = cleaned_data.get('confirm_password')
+    #    if password and confirm_password and password != confirm_password:
+    #        raise forms.ValidationError('As senhas não coincidem.')
+    #    return cleaned_data
 
 class UserLoginForm(forms.Form):
-    email = forms.EmailField(
-        label="Email",  # Label em português
-        widget=forms.EmailInput(attrs={'placeholder': 'Digite seu email', 'class': 'form-control'})
+    username = forms.CharField(
+        label="Nome de Usuário",
+        widget=forms.TextInput(attrs={'placeholder': 'Digite seu nome de usuário', 'class': 'form-control'})
     )
     password = forms.CharField(
-        label="Senha",  # Label em português
+        label="Senha",
         widget=forms.PasswordInput(attrs={'placeholder': 'Digite sua senha', 'class': 'form-control'})
     )
 

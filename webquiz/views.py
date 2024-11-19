@@ -13,6 +13,9 @@ from .models import Quiz, UserProfile, Question, AnswerOption
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from functools import wraps
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 #================================ACESSO================================
 def staff_required(view_func):
@@ -49,18 +52,32 @@ def register(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            first_name = form.cleaned_data.get('first_name')
-            email = form.cleaned_data.get('email')
-            password = form.cleaned_data.get('password')
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
 
-            user = User.objects.create_user(
-                username=email,  # Definimos o email como username para manter único
-                email=email,
-                password=password,
-                first_name=first_name
-            )
-            messages.success(request, 'Conta criada com sucesso! Agora você pode fazer login.')
-            return redirect('webquiz:login')
+            # Verifica se o nome de usuário já existe
+            if User.objects.filter(username=username).exists():
+                messages.error(request, 'Este nome de usuário já está em uso.')
+                return render(request, 'register.html', {'form': form})
+
+            # Verifica se o e-mail já existe
+            if User.objects.filter(email=email).exists():
+                messages.error(request, 'Este e-mail já está em uso.')
+                return render(request, 'register.html', {'form': form})
+
+            try:
+                # Criação do usuário
+                User.objects.create_user(
+                    username=username,
+                    email=email,
+                    password=form.cleaned_data['password']
+                )
+                messages.success(request, 'Conta criada com sucesso!')
+                return redirect('webquiz:login')
+            except Exception as e:
+                messages.error(request, f'Erro ao criar conta: {str(e)}')
+        else:
+            messages.error(request, 'Por favor, corrija os erros abaixo.')
     else:
         form = UserRegistrationForm()
 
@@ -73,30 +90,25 @@ def user_login(request):
     if request.method == 'POST':
         form = UserLoginForm(request.POST)
         if form.is_valid():
-            email = form.cleaned_data.get('email')
-            password = form.cleaned_data.get('password')
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
 
-            try:
-                user = User.objects.filter(email=email).first()  # Retorna o primeiro usuário com aquele email
-                if user:
-                    user = authenticate(request, username=user.username, password=password)
-                    if user is not None:
-                        login(request, user)
-                        messages.success(request, f'Bem-vindo, {user.username}!')
-                        return redirect('webquiz:home')
-                    else:
-                        messages.error(request, 'Email ou senha incorretos.')
-                else:
-                    messages.error(request, 'Usuário com este email não foi encontrado.')
-            except User.DoesNotExist:
-                messages.error(request, 'Usuário com este email não foi encontrado.')
+            user = authenticate(request, username=username, password=password)
+
+            if user is not None:
+                login(request, user)
+                messages.success(request, f'Bem-vindo, {user.username}!')
+                return redirect('webquiz:home')
+            else:
+                messages.error(request, 'Nome de usuário ou senha incorretos.')
         else:
-            messages.error(request, 'Email ou senha inválidos')
+            messages.error(request, 'Por favor, corrija os erros no formulário.')
 
     else:
         form = UserLoginForm()
 
     return render(request, 'login.html', {'form': form})
+
 
 # View para logout
 @login_required
