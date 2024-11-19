@@ -1,83 +1,126 @@
-/* accessibility.css */
-.accessibility-widget {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
+/* static/css/accessibility_widget.css */
+/* Container principal do widget - isolado dos filtros */
+#bitquest-accessibility-container {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 999999 !important;
+    width: auto !important;
+    height: auto !important;
+    pointer-events: auto !important;
+    /* Isola o container dos filtros */
+    filter: none !important;
+    -webkit-filter: none !important;
+    transform: none !important;
+    background: none !important;
 }
 
-.accessibility-button {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    transition: background-color 0.3s;
+.bitquest-accessibility-widget {
+    position: relative !important;
+    width: auto !important;
+    height: auto !important;
+    font-family: Arial, sans-serif !important;
 }
 
-.accessibility-button:hover {
-    background-color: #0056b3;
-}
-
-.accessibility-menu {
-    position: absolute;
-    bottom: 60px;
-    right: 0;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    padding: 15px;
-    width: 250px;
-    display: none;
-}
-
-.accessibility-menu.active {
-    display: block;
-}
-
-.accessibility-option {
-    padding: 8px 12px;
-    margin: 5px 0;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.accessibility-option:hover {
-    background-color: #f8f9fa;
-}
-
-/* Estilos para os temas de contraste */
-body.high-contrast {
-    background-color: black !important;
+.bitquest-accessibility-toggle {
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50% !important;
+    background: #2196F3 !important;
+    border: none !important;
     color: white !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
+    transition: background-color 0.3s !important;
+    padding: 0 !important;
+    position: relative !important;
 }
 
-body.high-contrast a {
-    color: yellow !important;
+.bitquest-accessibility-toggle:hover {
+    background: #1976D2 !important;
 }
 
-body.inverted {
+.bitquest-accessibility-toggle svg {
+    width: 24px !important;
+    height: 24px !important;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 2 !important;
+}
+
+.bitquest-accessibility-menu {
+    position: absolute !important;
+    bottom: 60px !important;
+    right: 0 !important;
+    width: 200px !important;
+    background: white !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+    padding: 10px 0 !important;
+    display: none !important;
+    opacity: 0 !important;
+    transform: translateY(10px) !important;
+    transition: opacity 0.3s, transform 0.3s !important;
+}
+
+.bitquest-accessibility-menu.active {
+    display: block !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+.bitquest-accessibility-option {
+    width: 100% !important;
+    padding: 10px 15px !important;
+    cursor: pointer !important;
+    background: white !important;
+    border: none !important;
+    text-align: left !important;
+    font-size: 14px !important;
+    color: #333 !important;
+    display: flex !important;
+    align-items: center !important;
+    transition: background-color 0.2s !important;
+}
+
+.bitquest-accessibility-option:hover {
+    background-color: #f5f5f5 !important;
+}
+
+.bitquest-accessibility-option span {
+    font-size: 14px !important;
+    color: #333 !important;
+}
+
+/* Estados ativos com aplicação controlada */
+.high-contrast {
+    filter: contrast(150%) !important;
+}
+
+.inverted {
     filter: invert(100%) !important;
 }
 
-body.grayscale {
+.grayscale {
     filter: grayscale(100%) !important;
 }
 
-body.no-animations * {
+.no-animations * {
     animation: none !important;
     transition: none !important;
 }
 
-/* Classes para tamanho de fonte */
-body.font-larger {
-    font-size: 120% !important;
-}
+/* Responsividade */
+@media (max-width: 768px) {
+    #bitquest-accessibility-container {
+        bottom: 10px !important;
+        right: 10px !important;
+    }
 
-body.font-smaller {
-    font-size: 90% !important;
+    .bitquest-accessibility-menu {
+        width: 180px !important;
+    }
 }

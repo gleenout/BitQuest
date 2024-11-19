@@ -1,76 +1,36 @@
-// accessibility.js
-class AccessibilityWidget {
+// static/js/accessibility_widget.js
+class BitQuestAccessibility {
     constructor() {
-        this.init();
-        this.loadPreferences();
-    }
+        this.widget = document.querySelector('.bitquest-accessibility-widget');
+        this.toggle = document.querySelector('.bitquest-accessibility-toggle');
+        this.menu = document.querySelector('.bitquest-accessibility-menu');
+        this.fontSizeBase = 16;
+        this.maxFontSize = 24;
+        this.minFontSize = 12;
 
-    init() {
-        // Criar e adicionar o widget ao DOM
-        const widget = document.createElement('div');
-        widget.className = 'accessibility-widget';
-        widget.innerHTML = this.createWidgetHTML();
-        document.body.appendChild(widget);
-
-        // Inicializar eventos
         this.initializeEvents();
-
-        // Inicializar sintetizador de voz
-        this.speechSynth = window.speechSynthesis;
-    }
-
-    createWidgetHTML() {
-        return `
-            <button class="accessibility-button" aria-label="Opções de Acessibilidade">
-                <i class="fas fa-universal-access"></i>
-            </button>
-            <div class="accessibility-menu">
-                <div class="accessibility-option" data-action="contrast">
-                    <i class="fas fa-adjust"></i> Alto Contraste
-                </div>
-                <div class="accessibility-option" data-action="invert">
-                    <i class="fas fa-circle"></i> Cores Invertidas
-                </div>
-                <div class="accessibility-option" data-action="grayscale">
-                    <i class="fas fa-gray"></i> Escala de Cinza
-                </div>
-                <div class="accessibility-option" data-action="animations">
-                    <i class="fas fa-running"></i> Desativar Animações
-                </div>
-                <div class="accessibility-option" data-action="increase-font">
-                    <i class="fas fa-plus"></i> Aumentar Fonte
-                </div>
-                <div class="accessibility-option" data-action="decrease-font">
-                    <i class="fas fa-minus"></i> Diminuir Fonte
-                </div>
-                <div class="accessibility-option" data-action="read-page">
-                    <i class="fas fa-volume-up"></i> Ler Página
-                </div>
-            </div>
-        `;
+        this.loadSavedSettings();
     }
 
     initializeEvents() {
-        const button = document.querySelector('.accessibility-button');
-        const menu = document.querySelector('.accessibility-menu');
-        const options = document.querySelectorAll('.accessibility-option');
-
-        button.addEventListener('click', () => {
-            menu.classList.toggle('active');
+        // Toggle menu
+        this.toggle.addEventListener('click', () => {
+            this.menu.classList.toggle('active');
         });
 
-        options.forEach(option => {
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!this.widget.contains(e.target)) {
+                this.menu.classList.remove('active');
+            }
+        });
+
+        // Handle accessibility options
+        document.querySelectorAll('.bitquest-accessibility-option').forEach(option => {
             option.addEventListener('click', (e) => {
-                const action = e.currentTarget.dataset.action;
+                const action = option.dataset.action;
                 this.handleAction(action);
             });
-        });
-
-        // Fechar menu quando clicar fora
-        document.addEventListener('click', (e) => {
-            if (!widget.contains(e.target)) {
-                menu.classList.remove('active');
-            }
         });
     }
 
@@ -89,69 +49,72 @@ class AccessibilityWidget {
                 this.toggleClass('no-animations');
                 break;
             case 'increase-font':
-                this.adjustFontSize(1);
+                this.changeFontSize(1);
                 break;
             case 'decrease-font':
-                this.adjustFontSize(-1);
+                this.changeFontSize(-1);
                 break;
             case 'read-page':
                 this.readPage();
                 break;
         }
-        this.savePreferences();
+
+        this.saveSettings();
     }
 
     toggleClass(className) {
         document.body.classList.toggle(className);
     }
 
-    adjustFontSize(direction) {
-        const body = document.body;
-        let currentSize = parseInt(window.getComputedStyle(body).fontSize);
-        const newSize = currentSize + (direction * 2);
+    changeFontSize(direction) {
+        let currentSize = parseInt(window.getComputedStyle(document.documentElement).fontSize);
+        let newSize = currentSize + (direction * 2);
 
-        if (newSize >= 12 && newSize <= 24) {
-            body.style.fontSize = `${newSize}px`;
+        if (newSize >= this.minFontSize && newSize <= this.maxFontSize) {
+            document.documentElement.style.fontSize = `${newSize}px`;
+            localStorage.setItem('bitquest-font-size', newSize);
         }
     }
 
     readPage() {
-        if (this.speechSynth.speaking) {
-            this.speechSynth.cancel();
-            return;
+        const text = document.body.textContent.trim();
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'pt-BR';
+            window.speechSynthesis.speak(utterance);
         }
-
-        const text = this.getPageContent();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'pt-BR';
-        this.speechSynth.speak(utterance);
     }
 
-    getPageContent() {
-        const mainContent = document.querySelector('main') || document.body;
-        return mainContent.innerText;
-    }
-
-    savePreferences() {
-        const preferences = {
+    saveSettings() {
+        const settings = {
             highContrast: document.body.classList.contains('high-contrast'),
             inverted: document.body.classList.contains('inverted'),
             grayscale: document.body.classList.contains('grayscale'),
             noAnimations: document.body.classList.contains('no-animations'),
-            fontSize: document.body.style.fontSize
+            fontSize: document.documentElement.style.fontSize
         };
-        localStorage.setItem('accessibility-preferences', JSON.stringify(preferences));
+
+        localStorage.setItem('bitquest-accessibility-settings', JSON.stringify(settings));
     }
 
-    loadPreferences() {
-        const saved = localStorage.getItem('accessibility-preferences');
-        if (saved) {
-            const preferences = JSON.parse(saved);
-            if (preferences.highContrast) document.body.classList.add('high-contrast');
-            if (preferences.inverted) document.body.classList.add('inverted');
-            if (preferences.grayscale) document.body.classList.add('grayscale');
-            if (preferences.noAnimations) document.body.classList.add('no-animations');
-            if (preferences.fontSize) document.body.style.fontSize = preferences.fontSize;
+    loadSavedSettings() {
+        const settings = JSON.parse(localStorage.getItem('bitquest-accessibility-settings'));
+        if (settings) {
+            if (settings.highContrast) document.body.classList.add('high-contrast');
+            if (settings.inverted) document.body.classList.add('inverted');
+            if (settings.grayscale) document.body.classList.add('grayscale');
+            if (settings.noAnimations) document.body.classList.add('no-animations');
+            if (settings.fontSize) document.documentElement.style.fontSize = settings.fontSize;
+        }
+
+        const savedFontSize = localStorage.getItem('bitquest-font-size');
+        if (savedFontSize) {
+            document.documentElement.style.fontSize = `${savedFontSize}px`;
         }
     }
 }
+
+// Inicializar o widget quando o DOM estiver carregado
+document.addEventListener('DOMContentLoaded', () => {
+    new BitQuestAccessibility();
+});

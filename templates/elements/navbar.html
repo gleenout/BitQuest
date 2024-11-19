@@ -1,4 +1,5 @@
-{% load tags %}{% load static %}
+{% load tags %}
+{% load static %}
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary shadow-sm">
         <div class="container-fluid">
@@ -19,41 +20,67 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <!-- Itens do Navbar -->
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <!-- Avatar com Dropdown -->
-                <div class="dropdown">
-                    <a
-                            data-mdb-dropdown-init
-                            class="dropdown-toggle d-flex align-items-center hidden-arrow"
-                            href="#"
-                            id="navbarDropdownMenuAvatar"
-                            role="button"
-                            aria-expanded="false"
-                    >
-                        <img
-                                src="{% static 'images/default_profile.jpg' %}"
-                                class="rounded-circle"
-                                height="25"
-                                alt="Avatar"
-                                loading="lazy"
-                        />
-                    </a>
-                    <ul
-                            class="dropdown-menu dropdown-menu-end"
-                            aria-labelledby="navbarDropdownMenuAvatar"
-                    >
-                        <li>
-                            <a class="dropdown-item" href="{% url 'webquiz:profile' %}">Perfil</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{% url 'webquiz:manage_quizzes' %}">Painel</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{% url 'webquiz:logout' %}">Sair</a>
-                        </li>
-                    </ul>
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <!-- Controles de Acessibilidade (para desktop) -->
+                <div class="d-none d-lg-flex justify-content-center accessibility-controls flex-grow-1">
+                    <button class="accessibility-btn" data-action="contrast" title="Alto Contraste">
+                        <i class="fas fa-adjust"></i>
+                    </button>
+                    <button class="accessibility-btn" data-action="invert" title="Cores Invertidas">
+                        <i class="fas fa-circle-half-stroke"></i>
+                    </button>
+                    <button class="accessibility-btn" data-action="grayscale" title="Escala de Cinza">
+                        <i class="fas fa-palette"></i>
+                    </button>
+                    <button class="accessibility-btn" data-action="animations" title="Desativar Animações">
+                        <i class="fas fa-stop-circle"></i>
+                    </button>
+                    <button class="accessibility-btn" data-action="decrease-font" title="Diminuir Fonte">
+                        <i class="fas fa-text-height fa-rotate-180"></i>
+                    </button>
+                    <button class="accessibility-btn" data-action="increase-font" title="Aumentar Fonte">
+                        <i class="fas fa-text-height"></i>
+                    </button>
+                    <button class="accessibility-btn" data-action="read-page" title="Ler Página">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
                 </div>
+
+                <div class="d-flex align-items-center">
+                    <a href="{% url 'webquiz:profile' %}" class="btn btn-outline-primary me-2">Perfil</a>
+
+                    <a href="{% url 'webquiz:manage_quizzes' %}" class="btn btn-outline-secondary me-2">Painel</a>
+
+                    <a href="{% url 'webquiz:logout' %}" class="btn btn-outline-danger">Sair</a>
+                </div>
+            </div>
         </div>
     </nav>
+
+    <!-- Controles de Acessibilidade (para mobile) -->
+    <div class="d-lg-none accessibility-controls fixed-bottom bg-white shadow-sm">
+        <div class="container-fluid d-flex justify-content-around">
+            <button class="accessibility-btn" data-action="contrast" title="Alto Contraste">
+                <i class="fas fa-adjust"></i>
+            </button>
+            <button class="accessibility-btn" data-action="invert" title="Cores Invertidas">
+                <i class="fas fa-circle-half-stroke"></i>
+            </button>
+            <button class="accessibility-btn" data-action="grayscale" title="Escala de Cinza">
+                <i class="fas fa-palette"></i>
+            </button>
+            <button class="accessibility-btn" data-action="animations" title="Desativar Animações">
+                <i class="fas fa-stop-circle"></i>
+            </button>
+            <button class="accessibility-btn" data-action="decrease-font" title="Diminuir Fonte">
+                <i class="fas fa-text-height fa-rotate-180"></i>
+            </button>
+            <button class="accessibility-btn" data-action="increase-font" title="Aumentar Fonte">
+                <i class="fas fa-text-height"></i>
+            </button>
+            <button class="accessibility-btn" data-action="read-page" title="Ler Página">
+                <i class="fas fa-volume-up"></i>
+            </button> </div>
+        </div>
+    </div>
 </header>

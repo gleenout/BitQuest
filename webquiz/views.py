@@ -35,7 +35,6 @@ def restricted_access_view(request):
 def firstpage(request):
     if request.user.is_authenticated:
         return redirect('webquiz:home')
-
     return render(request, 'firstpage.html')
 @login_required
 def home(request):

@@ -1,0 +1,115 @@
+/* Estilos base do navbar e botões permanecem os mesmos */
+.navbar {
+    height: 60px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.accessibility-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.accessibility-btn {
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    color: #6c757d;
+    border: none;
+    background: transparent;
+    border-radius: 50%;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.accessibility-btn:hover {
+    color: #2196F3;
+    background-color: rgba(33, 150, 243, 0.1);
+}
+
+.accessibility-btn.active {
+    color: #2196F3;
+    background-color: rgba(33, 150, 243, 0.15);
+}
+
+/* Filtros de Acessibilidade */
+body.high-contrast {
+    background-color: #000 !important;
+    color: #ffff00 !important;
+}
+
+body.high-contrast * {
+    background-color: #000 !important;
+    color: #ffff00 !important;
+    border-color: #ffff00 !important;
+}
+
+body.high-contrast a {
+    color: #00ff00 !important;
+    text-decoration: underline !important;
+}
+
+body.high-contrast button,
+body.high-contrast input,
+body.high-contrast select,
+body.high-contrast textarea {
+    border: 2px solid #ffff00 !important;
+    color: #ffff00 !important;
+}
+
+body.high-contrast img,
+body.high-contrast video {
+    filter: grayscale(100%) contrast(150%) !important;
+}
+
+body.high-contrast .navbar {
+    border-bottom: 2px solid #ffff00 !important;
+}
+
+/* Escala de Cinza */
+body.grayscale,
+body.grayscale * {
+    filter: grayscale(100%) !important;
+}
+
+/* Cores Invertidas */
+body.inverted {
+    filter: invert(100%) !important;
+}
+
+body.inverted img,
+body.inverted video {
+    filter: invert(100%) !important;
+}
+
+/* Desativar Animações */
+body.no-animations *,
+body.no-animations *::before,
+body.no-animations *::after {
+    animation: none !important;
+    transition: none !important;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .accessibility-controls {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 8px;
+        box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+        justify-content: space-around;
+        z-index: 1000;
+    }
+
+    .accessibility-btn {
+        width: 35px;
+        height: 35px;
+        padding: 6px;
+    }
+}
