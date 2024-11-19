@@ -31,7 +31,11 @@ urlpatterns = [
     path('play/<int:quiz_id>/perguntas/<int:question_id>/', views.quiz_question, name='quiz_question_with_id'),
     path('play/<int:quiz_id>/resultados/', views.quiz_results, name='quiz_results'),
 
-    path('acesso_negado/', views.restricted_access_view, name='restricted_access'),
+    path('convidado/', views.guest_home, name='guest_home'),
+    path('convidado/resultados/<int:quiz_id>/', views.guest_quiz_results, name='guest_quiz_results'),
+
+    path('random-question/', views.get_random_question, name='random_question'),
+
 
     path('test/', views.test, name='tests'),
 ]

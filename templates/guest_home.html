@@ -3,13 +3,13 @@
 {% block title %}Início{% endblock %}
 
 {% block header %}
-    {% element navbar %}{% endelement %}
+    {% element navbarguest %}{% endelement %}
 {% endblock %}
 
 {% block content %}
     <div class="container-fluid px-4 py-5">
         <div class="row">
-            <div class="col-12 text-center  p-5 mb-4 rounded">
+            <div class="col-12 text-center bg-light p-5 mb-4 rounded">
                 <h1 class="display-5 fw-bold">Bem-vindo ao BitQuest!</h1>
                 <p class="lead">Explore quizzes sobre letramento computacional e melhore suas habilidades.</p>
                 {% if guest_access %}

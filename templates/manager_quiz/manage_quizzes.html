@@ -10,6 +10,11 @@
         <div class="text-center mb-4">
             <a href="{% url 'webquiz:create_quiz' %}" class="btn btn-primary btn-lg">Criar Novo Quiz</a>
         </div>
+        <div>
+            <form method="get" action="{% url 'webquiz:random_question' %}">
+                <button type="submit">Obter Pergunta Aleatória</button>
+            </form>
+        </div>
 
         {% if quizzes %}
             <table class="table table-striped">

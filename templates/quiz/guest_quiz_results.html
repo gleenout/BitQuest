@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container my-5">
+        <div class="card p-4 shadow-sm">
+            <h2 class="text-center">{{ quiz.title }}</h2>
+            <p class="text-center">Resultado do Quiz:</p>
+
+            <ul class="list-group mb-4">
+                <li class="list-group-item">Total de Perguntas: {{ total_questions }}</li>
+                <li class="list-group-item">Respostas Corretas: {{ correct_answers }}</li>
+                <li class="list-group-item">Pontuação Total: {{ total_score }} XP</li>
+            </ul>
+
+            <h4 class="text-center mb-3">Detalhes das Perguntas</h4>
+            <ul class="list-group">
+                {% for result in question_results %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{{ result.question_text }}</span>
+                        <span class="{% if result.is_correct %}text-success{% else %}text-danger{% endif %}">
+                        {% if result.is_correct %}✔ Acertou{% else %}✖ Errou{% endif %}
+                    </span>
+                        <span>{{ result.points_awarded }} XP</span>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <div class="text-center mt-4">
+                <a href="{% url 'webquiz:guest_home' %}" class="btn btn-primary">Voltar para Home</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,7 +1,7 @@
 {% load tags %}
 {% load static %}
 <header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-light  shadow-sm">
         <div class="container-fluid">
             <!-- Logo e Nome da Marca -->
             <a class="navbar-brand d-flex align-items-center" href="{% url 'webquiz:home' %}">
@@ -47,10 +47,11 @@
                 </div>
 
                 <div class="d-flex align-items-center">
+                    <button class="accessibility-btn" data-action="dark-mode" title="Modo Escuro">
+                        <i class="fas fa-moon"></i>
+                    </button>
                     <a href="{% url 'webquiz:profile' %}" class="btn btn-outline-primary me-2">Perfil</a>
-
                     <a href="{% url 'webquiz:manage_quizzes' %}" class="btn btn-outline-secondary me-2">Painel</a>
-
                     <a href="{% url 'webquiz:logout' %}" class="btn btn-outline-danger">Sair</a>
                 </div>
             </div>
@@ -72,7 +73,7 @@
             <button class="accessibility-btn" data-action="animations" title="Desativar Animações">
                 <i class="fas fa-stop-circle"></i>
             </button>
-            <button class="accessibility-btn" data-action="decrease-font" title="Diminuir Fonte">
+            <button class=" accessibility-btn" data-action="decrease-font" title="Diminuir Fonte">
                 <i class="fas fa-text-height fa-rotate-180"></i>
             </button>
             <button class="accessibility-btn" data-action="increase-font" title="Aumentar Fonte">
@@ -80,7 +81,7 @@
             </button>
             <button class="accessibility-btn" data-action="read-page" title="Ler Página">
                 <i class="fas fa-volume-up"></i>
-            </button> </div>
+            </button>
         </div>
     </div>
 </header>

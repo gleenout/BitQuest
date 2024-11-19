@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from .forms import UserRegistrationForm, UserLoginForm, QuizForm, QuestionForm, AnswerOptionForm, \
     QuestionWithOptionsForm
@@ -10,12 +10,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from .models import Quiz, UserProfile, Question, AnswerOption
-from django.urls import reverse
-from django.http import HttpResponseRedirect
 from functools import wraps
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
+
+from django.http import Http404
 
 #================================ACESSO================================
 def staff_required(view_func):
@@ -24,11 +24,10 @@ def staff_required(view_func):
         if request.user.is_authenticated and request.user.is_staff:
             return view_func(request, *args, **kwargs)
         else:
-            # Redireciona para uma página de acesso negado
-            return HttpResponseRedirect(reverse('webquiz:restricted_access'))
+            # Lança um erro 404 em vez de redirecionar para a página de acesso restrito
+            raise Http404
     return _wrapped_view
-def restricted_access_view(request):
-    return render(request, 'restricted_access.html')
+
 #================================ACESSO================================
 
 #================================INICIO================================
@@ -42,7 +41,8 @@ def home(request):
     recent_quizzes = Quiz.objects.filter(is_published=True).order_by('-ccreated_at')[:6]
     return render(request, 'home.html', {
         'recent_quizzes': recent_quizzes,
-        'all_quizzes': all_quizzes
+        'all_quizzes': all_quizzes,
+        'guest_access': False
     })
 #================================INICIO================================
 
@@ -457,8 +457,6 @@ def quiz_start(request, quiz_id):
 
 def quiz_question(request, quiz_id, question_id=None):
     quiz = get_object_or_404(Quiz, id=quiz_id)
-
-    # Identifica a primeira pergunta se question_id não for fornecido
     if question_id is None:
         first_question = quiz.questions.first()
         if first_question:
@@ -466,25 +464,33 @@ def quiz_question(request, quiz_id, question_id=None):
         else:
             return render(request, 'no_questions.html', {'quiz': quiz})
 
-    # Pega a pergunta atual
     question = get_object_or_404(Question, id=question_id, quiz=quiz)
 
     if request.method == "POST":
         selected_option_id = request.POST.get("selected_option")
         if selected_option_id:
-            # Salva a resposta na sessão
             selected_option = get_object_or_404(question.answer_options, id=selected_option_id)
-            if 'quiz_answers' not in request.session:
-                request.session['quiz_answers'] = {}
-            request.session['quiz_answers'][str(question.id)] = selected_option.is_correct
-            request.session.modified = True
+            if request.user.is_authenticated:
+                if 'quiz_answers' not in request.session:
+                    request.session['quiz_answers'] = {}
+                request.session['quiz_answers'][str(question.id)] = selected_option.is_correct
+                request.session.modified = True
+            else:
+                # Para convidados, armazene as respostas na sessão
+                if 'quiz_answers' not in request.session:
+                    request.session['quiz_answers'] = {}
+                request.session['quiz_answers'][str(question.id)] = selected_option.is_correct
+                request.session.modified = True
 
             # Redireciona para a próxima pergunta se existir
             next_question = quiz.questions.filter(id__gt=question.id).first()
             if next_question:
                 return redirect('webquiz:quiz_question_with_id', quiz_id=quiz_id, question_id=next_question.id)
             else:
-                return redirect('webquiz:quiz_results', quiz_id=quiz.id)  # Redireciona para a tela de resultados
+                # Redireciona para a página de resultados para convidados
+                if not request.user.is_authenticated:
+                    return redirect('webquiz:guest_quiz_results', quiz_id=quiz.id)
+                return redirect('webquiz:quiz_results', quiz_id=quiz.id)
 
     return render(request, 'quiz/play_question.html', {'quiz': quiz, 'question': question})
 
@@ -536,7 +542,81 @@ def quiz_results(request, quiz_id):
         'user_experience': user_profile.score
     })
 
+def guest_home(request):
+    all_quizzes = Quiz.objects.filter(is_published=True)
+    recent_quizzes = Quiz.objects.filter(is_published=True).order_by('-ccreated_at')[:6]
+    return render(request, 'guest_home.html', {
+        'recent_quizzes': recent_quizzes,
+        'all_quizzes': all_quizzes,
+        'guest_access': True
+    })
+def guest_quiz_results(request, quiz_id):
+    answers = request.session.get('quiz_answers', {})
+    quiz = get_object_or_404(Quiz, id=quiz_id)
 
+    total_questions = quiz.questions.count()
+    correct_answers = 0
+    total_score = 0
+    question_results = []
+
+    for question in quiz.questions.all():
+        user_answer = answers.get(str(question.id))
+        is_correct = user_answer == True
+        question_points = question.points if is_correct else 0
+
+        question_results.append({
+            'question_text': question.question_text,
+            'is_correct': is_correct,
+            'points_awarded': question_points
+        })
+
+        if is_correct:
+            correct_answers += 1
+            total_score += question_points
+
+    return render(request, 'quiz/guest_quiz_results.html', {
+        'quiz': quiz,
+        'total_questions': total_questions,
+        'correct_answers': correct_answers,
+        'question_results': question_results,
+        'total_score': total_score,
+    })
+
+import requests
+from django.http import JsonResponse
+
+# views.py
+import requests
+from django.shortcuts import render
+from googletrans import Translator
+import html
+
+def get_random_question(request):
+    # Fazendo a requisição à Open Trivia Database
+    response = requests.get("https://opentdb.com/api.php?amount=1")
+
+    if response.status_code == 200:
+        data = response.json()
+        if data['response_code'] == 0:  # 0 significa sucesso
+            question_data = data['results'][0]
+            question = html.unescape(question_data['question'])
+            correct_answer = html.unescape(question_data['correct_answer'])
+            incorrect_answers = [html.unescape(ans) for ans in question_data['incorrect_answers']]
+            answers = incorrect_answers + [correct_answer]
+
+            # Traduzindo a pergunta e as respostas
+            translator = Translator()
+            question_pt = translator.translate(question, dest='pt').text
+            answers_pt = [translator.translate(ans, dest='pt').text for ans in answers]
+
+            return render(request, 'quiz/question.html', {
+                'question': question_pt,
+                'answers': answers_pt
+            })
+        else:
+            return render(request, 'quiz/error.html', {"error": "Nenhuma pergunta encontrada."})
+    else:
+        return render(request, 'quiz/error.html', {"error": "Erro ao acessar a API."})
 
 def test(request):
     messages.success(request, 'Operação TESTE realizada com sucesso!')

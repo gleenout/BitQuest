@@ -15,6 +15,7 @@
             <h1 class="mb-3">Bem-vindo ao BitQuiz!</h1>
             <h5 class="mb-4">Quizzes sobre letramento computacional.</h5>
             <a class="btn btn-outline-light btn-lg m-2" href="{% url 'webquiz:login' %}">Iniciar</a>
+            <a class="btn btn-outline-light btn-lg m-2" href="{% url 'webquiz:guest_home' %}">Acessar como Convidado</a>
             <br>
             {% if messages %}
                 <ul class="messages">
